@@ -26,6 +26,7 @@ def main():
         while not fourRoomsObj.isTerminal():
             state = fourRoomsObj.getPosition()
             action = chooseAction(state, epsilon, Q_vals)
+            gridType, newPos, packagesRemaining, isTerminal = fourRoomsObj.takeAction(action)
 
 if __name__ == "__main__":
     main()
