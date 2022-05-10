@@ -23,6 +23,14 @@ def getReward(packagesRemaining, oldPos,newPos):
         else: 
             return 0
 
+def updateQ(state, new_state, action, reward, Q_vals, lr, gamma):
+    x = state[0]
+    y = state[1]
+    xNew = new_state[0]
+    yNew = new_state[1]
+    Q_vals[x][y][action] = Q_vals[x][y][action] + lr * (reward + gamma * np.max(Q_vals[xNew][yNew][:]) - Q_vals[x][y][action])
+    return Q_vals
+
 def main():
     aTypes = ['UP', 'DOWN', 'LEFT', 'RIGHT']
     gTypes = ['EMPTY', 'RED', 'GREEN', 'BLUE']
@@ -39,6 +47,7 @@ def main():
             action = chooseAction(state, epsilon, Q_vals)
             gridType, newPos, packagesRemaining, isTerminal = fourRoomsObj.takeAction(action)
             reward = getReward(packagesRemaining, state, newPos)
-            
+            Q_vals = updateQ(state, newPos, action, reward, Q_vals, lr, gamma)
+
 if __name__ == "__main__":
     main()
