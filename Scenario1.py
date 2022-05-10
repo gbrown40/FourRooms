@@ -48,6 +48,7 @@ def main():
             gridType, newPos, packagesRemaining, isTerminal = fourRoomsObj.takeAction(action)
             reward = getReward(packagesRemaining, state, newPos)
             Q_vals = updateQ(state, newPos, action, reward, Q_vals, lr, gamma)
-
+        fourRoomsObj.newEpoch()
+        
 if __name__ == "__main__":
     main()
