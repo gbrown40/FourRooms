@@ -49,6 +49,16 @@ def main():
             reward = getReward(packagesRemaining, state, newPos)
             Q_vals = updateQ(state, newPos, action, reward, Q_vals, lr, gamma)
         fourRoomsObj.newEpoch()
-        
+
+    while not fourRoomsObj.isTerminal():
+        state = fourRoomsObj.getPosition()
+        x = state[0]
+        y = state[1]
+        action = np.argmax(Q_vals[x][y][:])
+        gridType, newPos, packagesRemaining, isTerminal = fourRoomsObj.takeAction(action)
+        print("Agent took {0} action and moved to {1} of type {2}".format (aTypes[action], newPos, gTypes[gridType]))
+
+    fourRoomsObj.showPath(-1)
+
 if __name__ == "__main__":
     main()
