@@ -12,6 +12,17 @@ def chooseAction(state, epsilon, Q_vals):
             action = np.argmax(Q_vals[x][y][:])
         return action
 
+def getReward(packagesRemaining, oldPos,newPos):
+        '''reward function for finding packages'''
+        # if running into a wall punish 
+        # if package then reward 
+        if (packagesRemaining == 0): # 
+            return 100
+        elif (oldPos == newPos): # ran into a wall and did not move 
+            return -50
+        else: 
+            return 0
+
 def main():
     aTypes = ['UP', 'DOWN', 'LEFT', 'RIGHT']
     gTypes = ['EMPTY', 'RED', 'GREEN', 'BLUE']
@@ -27,6 +38,7 @@ def main():
             state = fourRoomsObj.getPosition()
             action = chooseAction(state, epsilon, Q_vals)
             gridType, newPos, packagesRemaining, isTerminal = fourRoomsObj.takeAction(action)
-
+            reward = getReward(packagesRemaining, state, newPos)
+            
 if __name__ == "__main__":
     main()
