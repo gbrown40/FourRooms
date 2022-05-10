@@ -12,16 +12,23 @@ def chooseAction(state, epsilon, Q_vals):
             action = np.argmax(Q_vals[x][y][:])
         return action
 
-def getReward(packagesRemaining, oldPos,newPos):
+def getReward(numPackages, packagesRemaining, oldPos,newPos, seen):
         '''reward function for finding packages'''
         # if running into a wall punish 
         # if package then reward 
-        if (packagesRemaining == 0): # 
-            return 100
+        if newPos in seen:
+            return -50, numPackages
+        elif (packagesRemaining == numPackages - 1): # 
+            if (packagesRemaining == 2):
+                return 100, numPackages - 1
+            elif (packagesRemaining == 1):
+                return 150, numPackages - 1
+            else:
+                return 200, numPackages - 1
         elif (oldPos == newPos): # ran into a wall and did not move 
-            return -50
+            return -50, numPackages
         else: 
-            return 0
+            return 0, numPackages
 
 def updateQ(state, new_state, action, reward, Q_vals, lr, gamma):
     x = state[0]
@@ -42,11 +49,15 @@ def main():
     num_episodes = 100
     fourRoomsObj = FourRooms('simple')
     for i in range(0, num_episodes):
+        numPackages = 3
+        seen = []
         while not fourRoomsObj.isTerminal():
             state = fourRoomsObj.getPosition()
             action = chooseAction(state, epsilon, Q_vals)
             gridType, newPos, packagesRemaining, isTerminal = fourRoomsObj.takeAction(action)
-            reward = getReward(packagesRemaining, state, newPos)
+            if packagesRemaining == numPackages - 1:
+                seen.append(newPos)
+            reward, numPackages = getReward(numPackages, packagesRemaining, state, newPos, seen)
             Q_vals = updateQ(state, newPos, action, reward, Q_vals, lr, gamma)
         print("epoch " + str(i))
         fourRoomsObj.newEpoch()
