@@ -6,11 +6,12 @@ def chooseAction(state, epsilon, Q_vals, numPackages):
         action = 0
         if np.random.uniform(0, 1) <= epsilon:
             action = np.random.choice(4)
+            epsilon = epsilon - 0.001
         else:
             x = state[0]
             y = state[1]
             action = np.argmax(Q_vals[x][y][numPackages - 1][:])
-        return action
+        return action, epsilon
 
 def getReward(numPackages, packagesRemaining, oldPos, newPos):
         '''reward function for finding packages'''
@@ -39,13 +40,13 @@ def main():
     epsilon = 0.6
     Q_vals = np.zeros((12, 12, 3, 4))
     #train
-    num_episodes = 100
+    num_episodes = 1000
     fourRoomsObj = FourRooms('multi')
     for i in range(0, num_episodes):
         numPackages = 3
         while not fourRoomsObj.isTerminal():
             state = fourRoomsObj.getPosition()
-            action = chooseAction(state, epsilon, Q_vals, numPackages)
+            action, epsilon = chooseAction(state, epsilon, Q_vals, numPackages)
             gridType, newPos, packagesRemaining, isTerminal = fourRoomsObj.takeAction(action)
             reward = getReward(numPackages, packagesRemaining, state, newPos)
             Q_vals = updateQ(state, newPos, action, reward, Q_vals, lr, gamma, numPackages)
@@ -63,6 +64,7 @@ def main():
         gridType, newPos, packagesRemaining, isTerminal = fourRoomsObj.takeAction(action)
         if packagesRemaining == numPackages - 1:
                 numPackages = numPackages - 1
+        #fourRoomsObj.showPath(-1)
         print("Agent took {0} action and moved to {1} of type {2}".format (aTypes[action], newPos, gTypes[gridType]))
 
     fourRoomsObj.showPath(-1)
