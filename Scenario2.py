@@ -51,6 +51,7 @@ def main():
     Q_vals = np.zeros((12, 12, 3, 4))
     #train
     num_episodes = 1000
+    stochastic = False
     if len(sys.argv) > 1:
         stochastic = True
     fourRoomsObj = FourRooms('multi')
