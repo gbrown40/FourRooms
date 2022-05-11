@@ -25,20 +25,22 @@ def chooseAction(state, epsilon, Q_vals, numPackages, stochastic):
     return action
 
 def getReward(numPackages, packagesRemaining, oldPos, newPos, color):
-        '''reward function for finding packages'''
-        # if running into a wall punish 
-        # if package then reward 
-        if (packagesRemaining == numPackages - 1): # 
+        #if package has been collected in the right order, reward
+        #higher reward for each subsequent package found
+        if (packagesRemaining == numPackages - 1):
             if (color == 'RED' and numPackages == 3):
                 return 100
             elif (color == 'GREEN' and numPackages == 2):
                 return 200
             elif (color == 'BLUE' and numPackages == 1):
                 return 300
+            #if package collected in the wrong order, punish
             else:
                 return -100
-        elif (oldPos == newPos): # ran into a wall and did not move 
+        #if ran into a wall, punish
+        elif (oldPos == newPos): 
             return -50
+        #small punishment for not finding package
         else: 
             return -1
 
