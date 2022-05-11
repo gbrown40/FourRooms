@@ -7,8 +7,6 @@ def chooseAction(state, epsilon, Q_vals, numPackages, stochastic):
     if np.random.uniform(0, 1) <= epsilon:
          #choose random action
         action = np.random.choice(4)
-        #epsilon decay
-        epsilon = epsilon - 0.001
     else:
         x = state[0]
         y = state[1]
@@ -32,7 +30,7 @@ def getReward(numPackages, packagesRemaining, oldPos, newPos):
     if (packagesRemaining == numPackages - 1):
         return 100 * (4 - numPackages)
     #if ran into a wall, punish
-    elif (oldPos == newPos): # ran into a wall and did not move 
+    elif (oldPos == newPos):
         return -50
     #small punishment for not finding package
     else: 
@@ -54,7 +52,7 @@ def main():
     lr = 0.5
     gamma = 0.9
     epsilon = 0.6
-    #Q table that stores q values of state/package number/action pairs 
+    #Q table that stores q values of state/package number/action pairs
     #each state/action pair has a different value for each number of packages left to collect so the algorithm does not revisit packages
     Q_vals = np.zeros((12, 12, 3, 4))
     num_episodes = 100
@@ -80,6 +78,8 @@ def main():
             #update number of packages left to collect
             if packagesRemaining == numPackages - 1:
                 numPackages = numPackages - 1
+            #decay epsilon
+            epsilon = epsilon * 0.95
         print("epoch " + str(i))
         #start new epoch
         fourRoomsObj.newEpoch()
