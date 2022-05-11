@@ -18,11 +18,11 @@ def getReward(numPackages, packagesRemaining, oldPos, newPos):
         # if running into a wall punish 
         # if package then reward 
         if (packagesRemaining == numPackages - 1): # 
-            return 100
+            return 100 * (4 - numPackages)
         elif (oldPos == newPos): # ran into a wall and did not move 
             return -50
         else: 
-            return 0
+            return -1
 
 def updateQ(state, new_state, action, reward, Q_vals, lr, gamma, numPackages):
     x = state[0]
