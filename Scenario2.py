@@ -35,8 +35,8 @@ def updateQ(state, new_state, action, reward, Q_vals, lr, gamma, numPackages):
 def main():
     aTypes = ['UP', 'DOWN', 'LEFT', 'RIGHT']
     gTypes = ['EMPTY', 'RED', 'GREEN', 'BLUE']
-    lr = 0.2
-    gamma = 0.8
+    lr = 0.5
+    gamma = 0.9
     epsilon = 0.6
     Q_vals = np.zeros((12, 12, 3, 4))
     #train
