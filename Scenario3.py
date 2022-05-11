@@ -1,5 +1,6 @@
 from FourRooms import FourRooms
 import numpy as np
+import sys
 
 def chooseAction(state, epsilon, Q_vals, numPackages, stochastic):
         # choose action with most expected value
@@ -56,7 +57,8 @@ def main():
     Q_vals = np.zeros((12, 12, 3, 4))
     #train
     num_episodes = 1000
-    stochastic = True
+    if len(sys.argv) > 1:
+        stochastic = True
     fourRoomsObj = FourRooms('rgb')
     for i in range(0, num_episodes):
         numPackages = 3
