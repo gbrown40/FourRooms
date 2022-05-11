@@ -31,7 +31,7 @@ def getReward(packagesRemaining, oldPos,newPos):
         elif (oldPos == newPos): # ran into a wall and did not move 
             return -50
         else: 
-            return 0
+            return -1
 
 def updateQ(state, new_state, action, reward, Q_vals, lr, gamma):
     x = state[0]
