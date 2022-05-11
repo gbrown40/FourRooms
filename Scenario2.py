@@ -1,7 +1,7 @@
 from FourRooms import FourRooms
 import numpy as np
 
-def chooseAction(state, epsilon, Q_vals, numPackages):
+def chooseAction(state, epsilon, Q_vals, numPackages, stochastic):
         # choose action with most expected value
         action = 0
         if np.random.uniform(0, 1) <= epsilon:
@@ -11,6 +11,15 @@ def chooseAction(state, epsilon, Q_vals, numPackages):
             x = state[0]
             y = state[1]
             action = np.argmax(Q_vals[x][y][numPackages - 1][:])
+            if stochastic:
+                if action == 0:
+                    action = np.random.choice([0, 1, 2, 3], p=[0.8, 0.2/3.0, 0.2/3.0, 0.2/3.0])
+                elif action == 1:
+                    action = np.random.choice([0, 1, 2, 3], p=[0.2/3.0, 0.8, 0.2/3.0, 0.2/3.0])
+                elif action == 2:
+                    action = np.random.choice([0, 1, 2, 3], p=[0.2/3.0, 0.2/3.0, 0.8, 0.2/3.0])
+                elif action == 3:
+                    action = np.random.choice([0, 1, 2, 3], p=[0.2/3.0, 0.2/3.0, 0.2/3.0, 0.8])
         return action, epsilon
 
 def getReward(numPackages, packagesRemaining, oldPos, newPos):
@@ -41,12 +50,13 @@ def main():
     Q_vals = np.zeros((12, 12, 3, 4))
     #train
     num_episodes = 1000
+    stochastic = True
     fourRoomsObj = FourRooms('multi')
     for i in range(0, num_episodes):
         numPackages = 3
         while not fourRoomsObj.isTerminal():
             state = fourRoomsObj.getPosition()
-            action, epsilon = chooseAction(state, epsilon, Q_vals, numPackages)
+            action, epsilon = chooseAction(state, epsilon, Q_vals, numPackages, stochastic)
             gridType, newPos, packagesRemaining, isTerminal = fourRoomsObj.takeAction(action)
             reward = getReward(numPackages, packagesRemaining, state, newPos)
             Q_vals = updateQ(state, newPos, action, reward, Q_vals, lr, gamma, numPackages)

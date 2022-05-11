@@ -1,7 +1,7 @@
 from FourRooms import FourRooms
 import numpy as np
 
-def chooseAction(state, epsilon, Q_vals):
+def chooseAction(state, epsilon, Q_vals, stochastic):
         # choose action with most expected value
         action = 0
         if np.random.uniform(0, 1) <= epsilon:
@@ -10,6 +10,15 @@ def chooseAction(state, epsilon, Q_vals):
             x = state[0]
             y = state[1]
             action = np.argmax(Q_vals[x][y][:])
+            if stochastic:
+                if action == 0:
+                    action = np.random.choice([0, 1, 2, 3], p=[0.8, 0.2/3.0, 0.2/3.0, 0.2/3.0])
+                elif action == 1:
+                    action = np.random.choice([0, 1, 2, 3], p=[0.2/3.0, 0.8, 0.2/3.0, 0.2/3.0])
+                elif action == 2:
+                    action = np.random.choice([0, 1, 2, 3], p=[0.2/3.0, 0.2/3.0, 0.8, 0.2/3.0])
+                elif action == 3:
+                    action = np.random.choice([0, 1, 2, 3], p=[0.2/3.0, 0.2/3.0, 0.2/3.0, 0.8])
         return action
 
 def getReward(packagesRemaining, oldPos,newPos):
@@ -40,14 +49,16 @@ def main():
     Q_vals = np.zeros((12, 12, 4))
     #train
     num_episodes = 100
+    stochastic = True
     fourRoomsObj = FourRooms('simple')
     for i in range(0, num_episodes):
         while not fourRoomsObj.isTerminal():
             state = fourRoomsObj.getPosition()
-            action = chooseAction(state, epsilon, Q_vals)
+            action = chooseAction(state, epsilon, Q_vals, stochastic)
             gridType, newPos, packagesRemaining, isTerminal = fourRoomsObj.takeAction(action)
             reward = getReward(packagesRemaining, state, newPos)
             Q_vals = updateQ(state, newPos, action, reward, Q_vals, lr, gamma)
+        print("epoch " + str(i))
         fourRoomsObj.newEpoch()
 
     while not fourRoomsObj.isTerminal():
