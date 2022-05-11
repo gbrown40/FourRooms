@@ -18,17 +18,17 @@ def getReward(numPackages, packagesRemaining, oldPos, newPos, color):
         # if package then reward 
         if (packagesRemaining == numPackages - 1): # 
             if (color == 'RED' and numPackages == 3):
-                return 100, False
+                return 100
             elif (color == 'GREEN' and numPackages == 2):
-                return 200, False
+                return 200
             elif (color == 'BLUE' and numPackages == 1):
-                return 300, False
+                return 300
             else:
-                return -100, True
+                return -100
         elif (oldPos == newPos): # ran into a wall and did not move 
-            return -50, False
+            return -50
         else: 
-            return -1, False
+            return -1
 
 def updateQ(state, new_state, action, reward, Q_vals, lr, gamma, numPackages):
     x = state[0]
@@ -48,14 +48,13 @@ def main():
     #train
     num_episodes = 1000
     fourRoomsObj = FourRooms('rgb')
-    isTerminal = False
     for i in range(0, num_episodes):
         numPackages = 3
         while not fourRoomsObj.isTerminal():
             state = fourRoomsObj.getPosition()
             action = chooseAction(state, epsilon, Q_vals, numPackages)
             gridType, newPos, packagesRemaining, isTerminal = fourRoomsObj.takeAction(action)
-            reward, isTerminal = getReward(numPackages, packagesRemaining, state, newPos, gTypes[gridType])
+            reward = getReward(numPackages, packagesRemaining, state, newPos, gTypes[gridType])
             Q_vals = updateQ(state, newPos, action, reward, Q_vals, lr, gamma, numPackages)
             if packagesRemaining == numPackages - 1:
                 numPackages = numPackages - 1
