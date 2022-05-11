@@ -50,7 +50,7 @@ def main():
     epsilon = 0.6
     Q_vals = np.zeros((12, 12, 3, 4))
     #train
-    num_episodes = 1000
+    num_episodes = 100
     stochastic = False
     if len(sys.argv) > 1:
         stochastic = True
