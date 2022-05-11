@@ -22,11 +22,11 @@ def chooseAction(state, epsilon, Q_vals, stochastic):
                 action = np.random.choice([0, 1, 2, 3], p=[0.2/3.0, 0.2/3.0, 0.8, 0.2/3.0])
             elif action == 3:
                 action = np.random.choice([0, 1, 2, 3], p=[0.2/3.0, 0.2/3.0, 0.2/3.0, 0.8])
-        return action
+    return action
 
 def getReward(packagesRemaining, oldPos,newPos):
     #if package has been collected, reward
-    if (packagesRemaining == 0): 
+    if (packagesRemaining == 0): # 
         return 100
     #if ran into a wall, punish
     elif (oldPos == newPos):
