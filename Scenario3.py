@@ -59,6 +59,7 @@ def main():
             Q_vals = updateQ(state, newPos, action, reward, Q_vals, lr, gamma, numPackages)
             if packagesRemaining == numPackages - 1:
                 numPackages = numPackages - 1
+            epsilon = epsilon * 0.95
         print("epoch " + str(i))
         fourRoomsObj.newEpoch()
 
