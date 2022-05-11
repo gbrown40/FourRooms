@@ -41,12 +41,12 @@ def updateQ(state, new_state, action, reward, Q_vals, lr, gamma, numPackages):
 def main():
     aTypes = ['UP', 'DOWN', 'LEFT', 'RIGHT']
     gTypes = ['EMPTY', 'RED', 'GREEN', 'BLUE']
-    lr = 0.2
-    gamma = 0.8
-    epsilon = 0.6
+    lr = 0.5
+    gamma = 0.9
+    epsilon = 0.7
     Q_vals = np.zeros((12, 12, 3, 4))
     #train
-    num_episodes = 100
+    num_episodes = 1000
     fourRoomsObj = FourRooms('rgb')
     isTerminal = False
     for i in range(0, num_episodes):
