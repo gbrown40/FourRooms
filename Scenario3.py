@@ -44,13 +44,16 @@ def getReward(numPackages, packagesRemaining, oldPos, newPos, color):
         else: 
             return -1
 
-def updateQ(state, new_state, action, reward, Q_vals, lr, gamma, numPackages, stochastic):
+def updateQ(state, new_state, action, reward, Q_vals, lr, gamma, numPackages, packagesRemaining, stochastic):
     x = state[0]
     y = state[1]
     xNew = new_state[0]
     yNew = new_state[1]
+    state_package_pair = Q_vals[xNew][yNew][numPackages - 1]
+    if packagesRemaining == numPackages - 1 and numPackages >= 0:
+        Q_vals[xNew][yNew][numPackages - 2]
     #compute best action for next state
-    future_exp_val = Q_vals[xNew][yNew][numPackages - 1][:]
+    future_exp_val = state_package_pair[:]
     future_action = np.argmax(future_exp_val)
     #stochastically choose the action for next state
     if stochastic:
@@ -63,7 +66,7 @@ def updateQ(state, new_state, action, reward, Q_vals, lr, gamma, numPackages, st
         elif future_action == 3:
             future_action = np.random.choice([0, 1, 2, 3], p=[0.2/3.0, 0.2/3.0, 0.2/3.0, 0.8])
     #update Q values based on reward from taking action and expected reward of cell moved to from that action
-    Q_vals[x][y][numPackages - 1][action] = Q_vals[x][y][numPackages - 1][action] + lr * (reward + gamma * Q_vals[xNew][yNew][numPackages - 1][future_action] - Q_vals[x][y][numPackages - 1][action])
+    Q_vals[x][y][numPackages - 1][action] = Q_vals[x][y][numPackages - 1][action] + lr * (reward + gamma * state_package_pair[future_action] - Q_vals[x][y][numPackages - 1][action])
     return Q_vals
 
 def main():
@@ -95,7 +98,7 @@ def main():
             #calculate reward
             reward = getReward(numPackages, packagesRemaining, state, newPos, gTypes[gridType])
             #update Q values
-            Q_vals = updateQ(state, newPos, action, reward, Q_vals, lr, gamma, numPackages, stochastic)
+            Q_vals = updateQ(state, newPos, action, reward, Q_vals, lr, gamma, numPackages, packagesRemaining, stochastic)
             #update number of packages left to collect
             if packagesRemaining == numPackages - 1:
                 numPackages = numPackages - 1
