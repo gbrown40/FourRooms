@@ -44,13 +44,26 @@ def getReward(numPackages, packagesRemaining, oldPos, newPos, color):
         else: 
             return -1
 
-def updateQ(state, new_state, action, reward, Q_vals, lr, gamma, numPackages):
+def updateQ(state, new_state, action, reward, Q_vals, lr, gamma, numPackages, stochastic):
     x = state[0]
     y = state[1]
     xNew = new_state[0]
     yNew = new_state[1]
+    #compute best action for next state
+    future_exp_val = Q_vals[xNew][yNew][numPackages - 1][:]
+    future_action = np.argmax(future_exp_val)
+    #stochastically choose the action for next state
+    if stochastic:
+        if future_action == 0:
+            future_action = np.random.choice([0, 1, 2, 3], p=[0.8, 0.2/3.0, 0.2/3.0, 0.2/3.0])
+        elif future_action == 1:
+            future_action = np.random.choice([0, 1, 2, 3], p=[0.2/3.0, 0.8, 0.2/3.0, 0.2/3.0])
+        elif future_action == 2:
+            future_action = np.random.choice([0, 1, 2, 3], p=[0.2/3.0, 0.2/3.0, 0.8, 0.2/3.0])
+        elif future_action == 3:
+            future_action = np.random.choice([0, 1, 2, 3], p=[0.2/3.0, 0.2/3.0, 0.2/3.0, 0.8])
     #update Q values based on reward from taking action and expected reward of cell moved to from that action
-    Q_vals[x][y][numPackages - 1][action] = Q_vals[x][y][numPackages - 1][action] + lr * (reward + gamma * np.max(Q_vals[xNew][yNew][numPackages - 1][:]) - Q_vals[x][y][numPackages - 1][action])
+    Q_vals[x][y][numPackages - 1][action] = Q_vals[x][y][numPackages - 1][action] + lr * (reward + gamma * Q_vals[xNew][yNew][numPackages - 1][future_action] - Q_vals[x][y][numPackages - 1][action])
     return Q_vals
 
 def main():
@@ -82,7 +95,7 @@ def main():
             #calculate reward
             reward = getReward(numPackages, packagesRemaining, state, newPos, gTypes[gridType])
             #update Q values
-            Q_vals = updateQ(state, newPos, action, reward, Q_vals, lr, gamma, numPackages)
+            Q_vals = updateQ(state, newPos, action, reward, Q_vals, lr, gamma, numPackages, stochastic)
             #update number of packages left to collect
             if packagesRemaining == numPackages - 1:
                 numPackages = numPackages - 1

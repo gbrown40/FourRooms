@@ -35,13 +35,26 @@ def getReward(packagesRemaining, oldPos,newPos):
     else: 
         return -1
 
-def updateQ(state, new_state, action, reward, Q_vals, lr, gamma):
+def updateQ(state, new_state, action, reward, Q_vals, lr, gamma, stochastic):
     x = state[0]
     y = state[1]
     xNew = new_state[0]
-    yNew = new_state[1]
+    yNew = new_state[1] 
+    #compute best action for next state
+    future_exp_val = Q_vals[xNew][yNew][:]
+    future_action = np.argmax(future_exp_val)
+    #stochastically choose the action for next state
+    if stochastic:
+        if future_action == 0:
+            future_action = np.random.choice([0, 1, 2, 3], p=[0.8, 0.2/3.0, 0.2/3.0, 0.2/3.0])
+        elif future_action == 1:
+            future_action = np.random.choice([0, 1, 2, 3], p=[0.2/3.0, 0.8, 0.2/3.0, 0.2/3.0])
+        elif future_action == 2:
+            future_action = np.random.choice([0, 1, 2, 3], p=[0.2/3.0, 0.2/3.0, 0.8, 0.2/3.0])
+        elif future_action == 3:
+            future_action = np.random.choice([0, 1, 2, 3], p=[0.2/3.0, 0.2/3.0, 0.2/3.0, 0.8])
     #update Q values based on reward from taking action and expected reward of cell moved to from that action
-    Q_vals[x][y][action] = Q_vals[x][y][action] + lr * (reward + gamma * np.max(Q_vals[xNew][yNew][:]) - Q_vals[x][y][action])
+    Q_vals[x][y][action] = Q_vals[x][y][action] + lr * (reward + gamma * Q_vals[xNew][yNew][future_action] - Q_vals[x][y][action])
     return Q_vals
 
 def main():
@@ -70,7 +83,7 @@ def main():
             #calculate reward
             reward = getReward(packagesRemaining, state, newPos)
             #update Q values
-            Q_vals = updateQ(state, newPos, action, reward, Q_vals, lr, gamma)
+            Q_vals = updateQ(state, newPos, action, reward, Q_vals, lr, gamma, stochastic)
         print("epoch " + str(i))
         #start new epoch
         fourRoomsObj.newEpoch()
