@@ -49,6 +49,7 @@ def updateQ(state, new_state, action, reward, Q_vals, lr, gamma, numPackages, pa
     y = state[1]
     xNew = new_state[0]
     yNew = new_state[1]
+    #if package was just picked up, use q table for next package to find the expected reward of the next state
     state_package_pair = Q_vals[xNew][yNew][numPackages - 1]
     if packagesRemaining == numPackages - 1 and numPackages >= 0:
         Q_vals[xNew][yNew][numPackages - 2]
