@@ -76,7 +76,7 @@ def main():
     gTypes = ['EMPTY', 'RED', 'GREEN', 'BLUE']
     lr = 0.5
     gamma = 0.9
-    epsilon = 0.7
+    epsilon = 0.6
     #Q table that stores q values of state/package number/action pairs
     #each state/action pair has a different value for each number of packages left to collect so the algorithm does not revisit packages
     Q_vals = np.zeros((12, 12, 3, 4))
